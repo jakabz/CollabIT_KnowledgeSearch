@@ -5,6 +5,7 @@ import {  UrlQueryParameterCollection } from '@microsoft/sp-core-library';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
 import { Dropdown } from 'office-ui-fabric-react/lib/Dropdown';
+import Pagination from 'office-ui-fabric-react-pagination';
 import {
   Label,
   IComboBoxOption
@@ -19,6 +20,8 @@ export interface IKnowledgeSearchState {
   targetFilter: any;
   keywordsFilter: any;
   filteredList: any;
+  actPage: number;
+  pageSize: number;
 }
 
 const queryParameters = new UrlQueryParameterCollection(window.location.href);
@@ -34,7 +37,9 @@ export default class KnowledgeSearch extends React.Component<IKnowledgeSearchPro
       processFilter: "",
       productFilter: "",
       targetFilter: "",
-      keywordsFilter: ""
+      keywordsFilter: "",
+      actPage: 1, 
+      pageSize: 10
     };
   }
 
@@ -105,8 +110,9 @@ export default class KnowledgeSearch extends React.Component<IKnowledgeSearchPro
       return result;
     }
 
-    this.items = filteredList.map(item => {
+    this.items = filteredList.map((item, key) => {
       var tags = getTaxKeyword(item);
+      if(key < this.state.actPage * this.state.pageSize && key >= (this.state.actPage-1) * this.state.pageSize)
       return <div className={styles.resultItem} onClick={() => location.href = item.FileRef}>
         <div className={styles.resultItemIconDiv} style={item.BannerImageUrl?{backgroundImage: `url(${item.BannerImageUrl.Url})`}:{}}>
           {item.BannerImageUrl? '' : <Icon iconName={'KnowledgeArticle'} className={styles.resultItemIcon} />}
@@ -135,14 +141,14 @@ export default class KnowledgeSearch extends React.Component<IKnowledgeSearchPro
               id={"titleFilter"}
               placeholder="Search in Title"
               value={this.state.titleFilter} 
-              onChange={(value) => this.setState({titleFilter: value})}
+              onChange={(value) => this.setState({titleFilter: value, actPage:1})}
             />
           </div>
           <div className={ styles.dropdown }>
             <Dropdown
               label="Process"
               selectedKey={this.state.processFilter}
-              onChange={(event, item) => this.setState({processFilter: item.key})}
+              onChange={(event, item) => this.setState({processFilter: item.key, actPage:1})}
               placeholder="Select an option"
               options={OptionsProcess}
               styles={{ dropdown: { width: '100%' } }}
@@ -152,7 +158,7 @@ export default class KnowledgeSearch extends React.Component<IKnowledgeSearchPro
             <Dropdown
               label="Product"
               selectedKey={this.state.productFilter}
-              onChange={(event, item) => this.setState({productFilter: item.key})}
+              onChange={(event, item) => this.setState({productFilter: item.key, actPage:1})}
               placeholder="Select an option"
               options={OptionsProduct}
               styles={{ dropdown: { width: '100%' } }}
@@ -162,7 +168,7 @@ export default class KnowledgeSearch extends React.Component<IKnowledgeSearchPro
             <Dropdown
               label="Target audience"
               selectedKey={this.state.targetFilter}
-              onChange={(event, item) => this.setState({targetFilter: item.key})}
+              onChange={(event, item) => this.setState({targetFilter: item.key, actPage:1})}
               placeholder="Select an option"
               options={OptionsTarget}
               styles={{ dropdown: { width: '100%' } }}
@@ -172,7 +178,7 @@ export default class KnowledgeSearch extends React.Component<IKnowledgeSearchPro
             <Dropdown
               label="Enterprise Keywords"
               selectedKey={this.state.keywordsFilter}
-              onChange={(event, item) => this.setState({keywordsFilter: item.key})}
+              onChange={(event, item) => this.setState({keywordsFilter: item.key, actPage:1})}
               placeholder="Select an option"
               options={OptionsTags}
               styles={{ dropdown: { width: '100%' } }}
@@ -182,6 +188,17 @@ export default class KnowledgeSearch extends React.Component<IKnowledgeSearchPro
         <div className={ styles.details }>
           {this.items}
         </div>
+        {this.items.length > this.state.pageSize ? 
+        <div className={ styles.paginator }>
+          <Pagination
+            currentPage={this.state.actPage}
+            totalPages={this.items.length % this.state.pageSize != 0 ? Math.round(this.items.length / this.state.pageSize)+1: this.items.length / this.state.pageSize}
+            hidePreviousAndNextPageLinks={true}
+            hideFirstAndLastPageLinks={true}
+            onChange={(page) => this.setState({ actPage: page })}
+          />
+        </div>
+        : ''}
       </div>
     );
   }
