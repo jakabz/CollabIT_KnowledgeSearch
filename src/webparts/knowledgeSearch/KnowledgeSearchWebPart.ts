@@ -6,6 +6,7 @@ import {
   IPropertyPaneConfiguration,
   PropertyPaneTextField
 } from '@microsoft/sp-webpart-base';
+import { sp } from "@pnp/sp";
 
 import * as strings from 'KnowledgeSearchWebPartStrings';
 import KnowledgeSearch from './components/KnowledgeSearch';
@@ -18,14 +19,25 @@ export interface IKnowledgeSearchWebPartProps {
 export default class KnowledgeSearchWebPart extends BaseClientSideWebPart<IKnowledgeSearchWebPartProps> {
 
   public render(): void {
-    const element: React.ReactElement<IKnowledgeSearchProps > = React.createElement(
-      KnowledgeSearch,
-      {
-        title: this.properties.title
-      }
-    );
+    sp.setup({
+      spfxContext: this.context
+    });
+    const includeFields = [ 'Process', 'Product', 'Target audience', 'Enterprise Keywords' ];
+    const filter = `${includeFields.map(field => `Title eq '${field}'`).join(' or ')}`;
+    sp.web.lists.getByTitle('Knowledge base').fields.filter(filter).get().then((listData: any[]) => {
+      sp.web.lists.getByTitle('Knowledge base').items.select("Title", "Process", "Product", "TargetAudience", "TaxKeyword", "FileRef", "BannerImageUrl").get().then((listItems: any[]) => {
+        const element: React.ReactElement<IKnowledgeSearchProps > = React.createElement(
+          KnowledgeSearch,
+          {
+            title: this.properties.title,
+            listItems: listItems,
+            list: listData
+          }
+        );
 
-    ReactDom.render(element, this.domElement);
+        ReactDom.render(element, this.domElement);
+      });
+    });
   }
 
   protected onDispose(): void {

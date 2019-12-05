@@ -1,10 +1,100 @@
 @import '~office-ui-fabric-react/dist/sass/References.scss';
 
 .knowledgeSearch {
+  background-color:#fff;
+  border: 1px solid #ececec;
+  padding: 10px;
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.1);
+
+  .wptitle {
+    @include ms-font-xl;
+    @include ms-fontColor-white;
+    margin: 0;
+    background-color: "[theme: themeDarkAlt]";
+
+    span {
+      margin:15px 0;
+      display:inline-block;
+      vertical-align: middle;
+    }
+
+    .wptitleIcon {
+      vertical-align: middle;
+      margin: 0 5px 0 15px;
+    }
+  }
+
+  .SearchBtn {
+    margin-top:10px;
+  }
+
+  .details {
+    margin-top:20px;
+
+    .resultItem {
+      border: 1px solid silver;
+      margin: 10px 0;
+      cursor: pointer;
+
+      .resultItemIconDiv {
+        float:left;
+        width: 100px;
+        height: 100px;
+        background-color: "[theme: themeDarkAlt]";
+        background-position: center;
+        background-size: cover;
+
+        .resultItemIcon {
+          font-size: 60px;
+          color:#fff;
+          margin: 20px;
+        }
+      }
+
+      .resultItemDesc {
+        margin-left: 110px;
+
+        .resultItemTitle {
+          margin: 10px 0 0 0; 
+        }
+        .resultItemProps {
+          width: calc(50% - 10px);
+          margin: 5px;
+          display: inline-block;
+        }
+      }
+    }
+    .resultItem:hover {
+      background-color: #ececec;
+    }
+    .clear{
+      clear: both;
+      height: 0;
+      font-size: 0;
+    }
+  }
+
+  .searchBar {
+    border:1px solid silver;
+    padding:10px;
+    margin-top:10px;
+  }
+  
   .container {
     max-width: 700px;
     margin: 0px auto;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .dropdown {
+    width: calc(25% - 20px);
+    margin: 0 10px;
+    display: inline-block;
+  }
+
+  .titleSearch {
+    width: calc(100% - 20px);
+    margin: 0 10px;
   }
 
   .row {
