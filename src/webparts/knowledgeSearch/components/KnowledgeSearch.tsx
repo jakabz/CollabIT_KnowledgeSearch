@@ -56,7 +56,7 @@ export default class KnowledgeSearch extends React.Component<IKnowledgeSearchPro
   private items: any[] = [];
   
   public render(): React.ReactElement<IKnowledgeSearchProps> {
-    console.info(this.state);
+    //console.info(this.state);
     
     let OptionsProcess: IComboBoxOption[] = this.props.list[0].Choices.map((item,i) => {
       return { key: item, text: item };
@@ -85,7 +85,7 @@ export default class KnowledgeSearch extends React.Component<IKnowledgeSearchPro
 
 
     let filteredList = this.props.listItems
-      .filter(item => item.Title.toLowerCase().indexOf(this.state.titleFilter.toLowerCase()) > -1)
+      .filter(item => item.Title ? item.Title.toLowerCase().indexOf(this.state.titleFilter.toLowerCase()) > -1 : 1==1)
       .filter(item => this.state.processFilter == "" ? 1==1 : item.Process == this.state.processFilter)
       .filter(item => this.state.productFilter == "" ? 1==1 : item.Product == this.state.productFilter)
       .filter(item => this.state.targetFilter == "" ? 1==1 : item.TargetAudience == this.state.targetFilter)
