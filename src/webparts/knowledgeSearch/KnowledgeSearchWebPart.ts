@@ -23,9 +23,9 @@ export default class KnowledgeSearchWebPart extends BaseClientSideWebPart<IKnowl
       spfxContext: this.context
     });
     const includeFields = [ 'Process', 'Product', 'Target audience', 'Enterprise Keywords' ];
-    const filter = `${includeFields.map(field => `Title eq '${field}'`).join(' or ')}`;
+    let filter = `${includeFields.map(field => `Title eq '${field}'`).join(' or ')}`;
     sp.web.lists.getByTitle('Knowledge base').fields.filter(filter).get().then((listData: any[]) => {
-      sp.web.lists.getByTitle('Knowledge base').items.select("Title", "Process", "Product", "TargetAudience", "TaxKeyword", "FileRef", "BannerImageUrl").get().then((listItems: any[]) => {
+      sp.web.lists.getByTitle('Knowledge base').items.filter('FSObjType ne 1').select("Title", "Process", "Product", "TargetAudience", "TaxKeyword", "FileRef", "BannerImageUrl").get().then((listItems: any[]) => {
         const element: React.ReactElement<IKnowledgeSearchProps > = React.createElement(
           KnowledgeSearch,
           {
